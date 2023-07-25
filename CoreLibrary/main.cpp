@@ -1,4 +1,6 @@
 #include <iostream>
+
+#include "ReferenceCounterManager.h"
 #include "SmartPointer.hpp"
 
 using namespace std;
@@ -20,5 +22,13 @@ int main()
 	{
 		(*Ptr).Print();
 	}
+
+	int* pa = new int;
+	ReferenceCounterManager::GetInstance()->AddPointer(pa);
+	ReferenceCounterManager::GetInstance()->AddPointer(pa);
+	ReferenceCounterManager::GetInstance()->AddPointer(pa);
+	cout << ReferenceCounterManager::GetInstance()->GetReferenceCount(pa) << endl;
+	ReferenceCounterManager::GetInstance()->SubtractPointer(pa);
+	cout << ReferenceCounterManager::GetInstance()->GetReferenceCount(pa) << endl;
 	return 0;
 }

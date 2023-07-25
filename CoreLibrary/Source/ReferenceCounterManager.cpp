@@ -8,31 +8,63 @@ ReferenceCounterManager* ReferenceCounterManager::GetInstance()
 
 void ReferenceCounterManager::AddPointer(void* Pointer)
 {
-	if (nullptr == Head)
+	CounterInfo* ResultNode = GetPointer(Pointer);
+	if (nullptr != ResultNode)
 	{
-		Head = new CounterInfo(Pointer);
-		return;
-	}
-
-	CounterInfo* Node = Head;
-	while (Node->Next)
-	{
-		if (Node->Pointer == Pointer)
-		{
-			Node->Count++;
-			return;
-		}
-
-		Node = Node->Next;
-	}
-
-	if (Node->Pointer == Pointer)
-	{
-		Node->Count++;
+		ResultNode->Count++;
 	}
 	else
 	{
-		CounterInfo* Info = new CounterInfo(Pointer);
-		Node->Next = Info;
+		AppendPointer(Pointer);
 	}
+}
+
+CounterInfo* ReferenceCounterManager::GetPointer(void* Pointer)
+{
+	CounterInfo* Node = Head;
+	while (nullptr != Node)
+	{
+		if (Pointer == Node->Pointer)
+		{
+			return Node;
+		}
+	}
+
+	return nullptr;
+}
+
+void ReferenceCounterManager::SubtractPointer(void* Pointer)
+{
+	CounterInfo* ResultNode = GetPointer(Pointer);
+	if (nullptr != ResultNode)
+	{
+		ResultNode->Count--;
+	}
+}
+
+int ReferenceCounterManager::GetReferenceCount(void* Pointer)
+{
+	CounterInfo* ResultNode = GetPointer(Pointer);
+	if (nullptr != ResultNode)
+	{
+		return ResultNode->Count;
+	}
+
+	return -1;
+}
+
+void ReferenceCounterManager::AppendPointer(void* Pointer)
+{
+	if (nullptr == Head)
+	{
+		Head = new CounterInfo(Pointer);
+	}
+
+	CounterInfo* Node = Head;
+	while (nullptr != Node->Next)
+	{
+		Node = Node->Next;
+	}
+
+	Node->Next = new CounterInfo(Pointer);
 }

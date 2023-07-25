@@ -26,14 +26,20 @@ struct CounterInfo
 class ReferenceCounterManager
 {
 public:
-	ReferenceCounterManager* GetInstance();
+	static ReferenceCounterManager* GetInstance();
 
 	void AddPointer(void* Pointer);
+	CounterInfo* GetPointer(void* Pointer);
+	void SubtractPointer(void* Pointer);
+
+	int GetReferenceCount(void* Pointer);
 
 private:
 	ReferenceCounterManager() = default;
 	~ReferenceCounterManager() = default;
-	
+
+	void AppendPointer(void* Pointer);
+
 private:
 	CounterInfo* Head;
 };
